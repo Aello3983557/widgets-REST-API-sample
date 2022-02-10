@@ -35,6 +35,7 @@ public class Widget {
     @ApiModelProperty(value = "Widget height", example = INTEGER_EXAMPLE)
     @Min(value = 1)
     private int height;
+    @ApiModelProperty(hidden = true)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonFormat(pattern = DATE_PATTERN)
     @EqualsAndHashCode.Exclude
