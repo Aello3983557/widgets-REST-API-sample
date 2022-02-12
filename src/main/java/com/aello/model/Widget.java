@@ -22,7 +22,7 @@ public class Widget {
     @ApiModelProperty(value = "Unique identifier", example = UUID_EXAMPLE)
     private UUID uuid;
     @ApiModelProperty(value = Z_INDEX_DESCRIPTION, example = INTEGER_EXAMPLE)
-    private Integer z_index;
+    private Integer zIndex;
     @ApiModelProperty(value = "X coordinate", example = INTEGER_EXAMPLE)
     @NotNull
     private Integer x;
