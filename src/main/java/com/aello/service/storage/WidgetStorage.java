@@ -4,23 +4,13 @@ import com.aello.model.Widget;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 public interface WidgetStorage {
-
-    Integer getNewWidgetZIndex();
-
-    void shiftWidgets(Integer widgetZIndex);
-
     Widget storeWidget(Widget widget);
 
-    boolean isWidgetStorageContainWidget(UUID widgetUUID);
+    void deleteWidgetByUUID(String widgetUUID);
 
-    void deleteWidgetByUUID(UUID widgetUUID);
-
-    Optional<Widget> getWidgetById(UUID widgetUUID);
-
-    boolean isStorageFilled();
+    Optional<Widget> getWidgetByUUID(String widgetUUID);
 
     List<Widget> getAllWidgets();
 }
