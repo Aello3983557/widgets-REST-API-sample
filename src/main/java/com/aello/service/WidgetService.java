@@ -33,7 +33,7 @@ public class WidgetService {
     public Widget updateWidget(String widgetUUID, Widget widget) {
         validateWidgetId(widget.getUuid());
         if (!widgetUUID.equals(widget.getUuid())) {
-            throw new WidgetIdValidationException(WIDGET_ID_MISSMATCH_EXCEPTION_MESSAGE);
+            throw new WidgetIdValidationException(WIDGET_ID_MISMATCH_EXCEPTION_MESSAGE);
         }
         return widgetStorage.storeWidget(widget);
     }

@@ -1,6 +1,6 @@
 package com.aello.service;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
@@ -12,7 +12,7 @@ public class WidgetUtils {
     }
 
     public static String currentDate() {
-        return LocalDate.now().format(DateTimeFormatter.ofPattern(DATE_PATTERN));
+        return LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_PATTERN));
     }
     private WidgetUtils() {
     }
