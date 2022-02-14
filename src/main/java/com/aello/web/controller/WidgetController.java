@@ -40,7 +40,7 @@ public class WidgetController {
     @ApiOperation(value = UPDATE_WIDGET_DESCRIPTION, notes = UPDATE_WIDGET_NOTES, response = Widget.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = WIDGET_UPDATED_SUCCESSFULLY),
-            @ApiResponse(code = 400, message = WIDGET_ID_IS_EMPTY_EXCEPTION_MESSAGE),
+            @ApiResponse(code = 400, message = WIDGET_ID_MISSMATCH_EXCEPTION_MESSAGE),
             @ApiResponse(code = 404, message = WIDGET_NOT_FOUND_EXCEPTION_MESSAGE)})
     @PatchMapping(WIDGET_UUID_MAPPING)
     @ResponseStatus(HttpStatus.OK)
@@ -64,7 +64,7 @@ public class WidgetController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @ApiOperation(value = GET_WIDGET_BY_UUID_DESCRIPTION)
+    @ApiOperation(value = GET_WIDGET_DESCRIPTION)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = WIDGET_FOUND),
             @ApiResponse(code = 404, message = WIDGET_NOT_FOUND_EXCEPTION_MESSAGE)})

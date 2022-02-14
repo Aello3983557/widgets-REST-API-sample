@@ -1,12 +1,16 @@
 package com.aello.service;
 
 import com.aello.model.Widget;
+import com.aello.model.exception.EmptyWidgetStorageException;
 import com.aello.model.exception.WidgetIdValidationException;
+import com.aello.model.exception.WidgetNotFoundException;
 import com.aello.service.storage.WidgetStorage;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.aello.constants.ControllerDocumentationConstants.*;
 
@@ -41,18 +45,23 @@ public class WidgetService {
 
     public Widget getWidgetByUUID(String widgetUUID) {
         validateWidgetId(widgetUUID);
-        return widgetStorage.getWidgetByUUID(widgetUUID).get();
+        Optional<Widget> optionalWidget = widgetStorage.getWidgetByUUID(widgetUUID);
+        if (optionalWidget.isEmpty()) {
+            throw new WidgetNotFoundException(WIDGET_NOT_FOUND_EXCEPTION_MESSAGE);
+        }
+        return optionalWidget.get();
     }
 
     public List<Widget> getAllWidgets() {
-//        if (!widgetStorage.isStorageFilled()) {
-//            throw new EmptyWidgetStorageException(EMPTY_WIDGET_STORAGE_EXCEPTION_MESSAGE);
-//        }
-        return widgetStorage.getAllWidgets();
+        List<Widget> storedWidgets = widgetStorage.getAllWidgets();
+        if (storedWidgets.isEmpty()) {
+            throw new EmptyWidgetStorageException(EMPTY_WIDGET_STORAGE_EXCEPTION_MESSAGE);
+        }
+        return storedWidgets;
     }
 
     private void validateWidgetId(String widgetUUID) {
-        if (widgetUUID == null) {
+        if (Strings.isBlank(widgetUUID)) {
             throw new WidgetIdValidationException(WIDGET_ID_IS_EMPTY_EXCEPTION_MESSAGE);
         }
     }

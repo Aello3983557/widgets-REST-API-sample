@@ -7,7 +7,7 @@ public interface ControllerDocumentationConstants {
     String CREATE_WIDGET_DESCRIPTION = "Creating a widget";
     String UPDATE_WIDGET_DESCRIPTION = "Changing widget data by UUID";
     String DELETE_WIDGET_DESCRIPTION = "Delete stored widget data by UUID";
-    String GET_WIDGET_BY_UUID_DESCRIPTION = "Getting a widget by UUID";
+    String GET_WIDGET_DESCRIPTION = "Getting a widget by UUID";
     String GET_ALL_WIDGET_DESCRIPTION = "Getting a list of widgets";
 
     String CREATE_WIDGET_NOTES =

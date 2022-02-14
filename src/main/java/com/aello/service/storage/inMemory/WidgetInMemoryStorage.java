@@ -1,6 +1,7 @@
 package com.aello.service.storage.inMemory;
 
 import com.aello.model.Widget;
+import com.aello.model.exception.WidgetNotFoundException;
 import com.aello.service.storage.WidgetStorage;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +11,8 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
+import static com.aello.constants.CommonConstants.Z_INDEX_SHIFT_VALUE;
+import static com.aello.constants.ControllerDocumentationConstants.WIDGET_NOT_FOUND_EXCEPTION_MESSAGE;
 import static com.aello.service.WidgetUtils.currentDate;
 import static com.aello.service.WidgetUtils.generateUUID;
 import static java.util.Optional.ofNullable;
@@ -18,7 +21,7 @@ import static java.util.Optional.ofNullable;
 public class WidgetInMemoryStorage implements WidgetStorage {
     private final Lock readLock;
     private final Lock writeLock;
-    private final Map<String, Widget> widgetByUUID = new HashMap();
+    private final Map<String, Widget> widgetByUUID = new HashMap<>();
     private final NavigableMap<Integer, String> widgetUUIDByZIndex = new TreeMap<>();
 
     public WidgetInMemoryStorage() {
@@ -52,10 +55,13 @@ public class WidgetInMemoryStorage implements WidgetStorage {
         writeLock.lock();
         try {
             Optional<Widget> widgetToDelete = getWidgetByUUID(widgetUUID);
-            widgetToDelete.ifPresent(widget -> {
+            if (widgetToDelete.isEmpty()) {
+                throw new WidgetNotFoundException(WIDGET_NOT_FOUND_EXCEPTION_MESSAGE);
+            } else {
+                Widget widget = widgetToDelete.get();
                 widgetUUIDByZIndex.remove(widget.getZIndex());
                 widgetByUUID.remove(widget.getUuid());
-            });
+            }
         } finally {
             writeLock.unlock();
         }
@@ -73,7 +79,17 @@ public class WidgetInMemoryStorage implements WidgetStorage {
 
     @Override
     public List<Widget> getAllWidgets() {
-        return null;
+        if (widgetUUIDByZIndex.isEmpty()) {
+            return Collections.EMPTY_LIST;
+        }
+        readLock.lock();
+        try {
+            return widgetUUIDByZIndex.values().stream()
+                    .map(widgetByUUID::get)
+                    .collect(Collectors.toList());
+        } finally {
+            readLock.unlock();
+        }
     }
 
     private Integer getMaxZIndex() {
@@ -94,13 +110,15 @@ public class WidgetInMemoryStorage implements WidgetStorage {
         findWidgetsToShift(zIndex).forEach(shiftedWidget -> {
             Integer shiftedWidgetZIndex = shiftedWidget.getZIndex();
             widgetUUIDByZIndex.remove(shiftedWidgetZIndex);
-            shiftedWidget.setZIndex(shiftedWidgetZIndex + 1);
+            shiftedWidget.setZIndex(shiftedWidgetZIndex + Z_INDEX_SHIFT_VALUE);
             save(shiftedWidget);
         });
     }
 
     private List<Widget> findWidgetsToShift(Integer zIndex) {
-        return widgetUUIDByZIndex.tailMap(zIndex).values().stream().map(widgetByUUID::get).collect(Collectors.toList());
+        return widgetUUIDByZIndex.tailMap(zIndex).values().stream()
+                .map(widgetByUUID::get)
+                .collect(Collectors.toList());
     }
 
     private Widget save(Widget widget) {
