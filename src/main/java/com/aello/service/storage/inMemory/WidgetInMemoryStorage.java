@@ -96,7 +96,7 @@ public class WidgetInMemoryStorage implements WidgetStorage {
         if (widgetUUIDByZIndex.isEmpty()) {
             return 0;
         }
-        return widgetUUIDByZIndex.lastKey();
+        return widgetUUIDByZIndex.lastKey() + Z_INDEX_SHIFT_VALUE;
     }
 
     private void shiftWidgetsZIndex(Integer zIndex) {
@@ -116,9 +116,19 @@ public class WidgetInMemoryStorage implements WidgetStorage {
     }
 
     private List<Widget> findWidgetsToShift(Integer zIndex) {
-        return widgetUUIDByZIndex.tailMap(zIndex).values().stream()
+        List<Widget> tailWidgetsSubset = widgetUUIDByZIndex.tailMap(zIndex).values().stream()
                 .map(widgetByUUID::get)
                 .collect(Collectors.toList());
+        List<Widget> widgetsToShift = new ArrayList<>();
+        Integer previousZIndex = tailWidgetsSubset.get(0).getZIndex() - 1;
+        for (Widget widget : tailWidgetsSubset) {
+            if (!widget.getZIndex().equals(previousZIndex + 1)) {
+                break;
+            }
+            previousZIndex = widget.getZIndex();
+            widgetsToShift.add(widget);
+        }
+        return widgetsToShift;
     }
 
     private Widget save(Widget widget) {

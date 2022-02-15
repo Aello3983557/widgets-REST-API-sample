@@ -40,7 +40,7 @@ public class WidgetController {
     @ApiOperation(value = UPDATE_WIDGET_DESCRIPTION, notes = UPDATE_WIDGET_NOTES, response = Widget.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = WIDGET_UPDATED_SUCCESSFULLY),
-            @ApiResponse(code = 400, message = WIDGET_ID_MISMATCH_EXCEPTION_MESSAGE),
+            @ApiResponse(code = 400, message = WIDGET_ID_VALIDATION_EXCEPTION_MESSAGE),
             @ApiResponse(code = 404, message = WIDGET_NOT_FOUND_EXCEPTION_MESSAGE)})
     @PatchMapping(WIDGET_UUID_MAPPING)
     @ResponseStatus(HttpStatus.OK)

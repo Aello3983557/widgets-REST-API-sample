@@ -34,7 +34,7 @@ public class WidgetControllerTest {
 
     @Test
     public void createWidgetWithAllProperties() throws Exception {
-        Widget createCondition = createWidgetForTest();
+        Widget createCondition = createNewWidgetForTest();
         Widget responseCreateCondition = createWidgetByPostAction(createCondition);
         String widgetUuid = responseCreateCondition.getUuid();
 
@@ -57,7 +57,7 @@ public class WidgetControllerTest {
 
     @Test
     public void testUpdateWidget() throws Exception {
-        Widget createCondition = createWidgetForTest();
+        Widget createCondition = createNewWidgetForTest();
         Widget responseCreateCondition = createWidgetByPostAction(createCondition);
         String widgetUuid = responseCreateCondition.getUuid();
         Widget updateCondition = createWidgetForTest();
@@ -95,7 +95,7 @@ public class WidgetControllerTest {
 
     @Test
     public void testDeleteWidget() throws Exception {
-        Widget responseCreateCondition = createWidgetByPostAction(createWidgetForTest());
+        Widget responseCreateCondition = createWidgetByPostAction(createNewWidgetForTest());
         deleteAndCheckStatus("/" + responseCreateCondition.getUuid(), status().isOk());
     }
 
@@ -106,7 +106,7 @@ public class WidgetControllerTest {
 
     @Test
     public void testGetWidget() throws Exception {
-        Widget createCondition = createWidgetForTest();
+        Widget createCondition = createNewWidgetForTest();
         Widget responseCreateCondition = createWidgetByPostAction(createCondition);
         String widgetUuid = responseCreateCondition.getUuid();
         Widget responseGetCondition = getWidgetByGetAction(widgetUuid);
@@ -129,9 +129,9 @@ public class WidgetControllerTest {
 
     @Test
     public void testGetWidgets() throws Exception {
-        createWidgetByPostAction(createWidgetForTest());
-        createWidgetByPostAction(createWidgetForTest());
-        createWidgetByPostAction(createWidgetForTest());
+        createWidgetByPostAction(createNewWidgetForTest());
+        createWidgetByPostAction(createNewWidgetForTest());
+        createWidgetByPostAction(createNewWidgetForTest());
         List<Widget> responseWidgetsGetCondition = getWidgetsByGetWidgetsAction();
 
         assertThat(3).isEqualTo(responseWidgetsGetCondition.size());
@@ -143,7 +143,6 @@ public class WidgetControllerTest {
     }
 
     private Widget createWidgetByPostAction(Widget createCondition) throws Exception {
-        createCondition.setUuid(null);
         ResultActions createResultAction = postAndCheckStatus(objectMapper.writeValueAsString(createCondition), status().isCreated());
         return objectMapper.readValue(createResultAction
                 .andReturn()
