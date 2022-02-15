@@ -14,10 +14,10 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.util.List;
 import java.util.UUID;
 
 import static com.aello.constants.ControllerDocumentationConstants.WIDGET_MAPPING;
+import static com.aello.constants.WidgetConstants.Z_INDEX_PROP;
 import static com.aello.widgetsRESTAPIsample.utils.TestUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -132,9 +132,8 @@ public class WidgetControllerTest {
         createWidgetByPostAction(createNewWidgetForTest());
         createWidgetByPostAction(createNewWidgetForTest());
         createWidgetByPostAction(createNewWidgetForTest());
-        List<Widget> responseWidgetsGetCondition = getWidgetsByGetWidgetsAction();
 
-        assertThat(3).isEqualTo(responseWidgetsGetCondition.size());
+        assertThat(3).isEqualTo(getWidgetsCountByGetWidgetsAction());
     }
 
     @Test
@@ -158,12 +157,11 @@ public class WidgetControllerTest {
                 .getContentAsString(), Widget.class);
     }
 
-    private List<Widget> getWidgetsByGetWidgetsAction() throws Exception {
-        ResultActions resultAction = getAndCheckStatus(Strings.EMPTY, status().isOk());
-        return objectMapper.readValue(resultAction
-                .andReturn()
-                .getResponse()
-                .getContentAsString(), objectMapper.getTypeFactory().constructCollectionType(List.class, Widget.class));
+    private Integer getWidgetsCountByGetWidgetsAction() throws Exception {
+        ResultActions resultAction = getPageableAndCheckStatus(status().isOk());
+        String content =  resultAction.andReturn().getResponse().getContentAsString();
+        int indx = content.indexOf("totalElements") + 15;
+        return Integer.parseInt(content.substring(indx, indx + 1));
     }
 
     private ResultActions postAndCheckStatus(String requestBody, ResultMatcher resultMatcher) throws Exception {
@@ -185,6 +183,15 @@ public class WidgetControllerTest {
     private ResultActions getAndCheckStatus(String pathVariable, ResultMatcher resultMatcher) throws Exception {
         return mvc.perform(MockMvcRequestBuilders
                         .get(WIDGET_MAPPING + pathVariable))
+                .andExpect(resultMatcher);
+    }
+
+    private ResultActions getPageableAndCheckStatus(ResultMatcher resultMatcher) throws Exception {
+        return mvc.perform(MockMvcRequestBuilders
+                        .get(WIDGET_MAPPING)
+                        .param("page", "1")
+                        .param("size", "10")
+                        .param("sort", Z_INDEX_PROP + ",asc"))
                 .andExpect(resultMatcher);
     }
 

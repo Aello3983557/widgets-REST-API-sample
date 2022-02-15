@@ -128,6 +128,7 @@ public class WidgetInMemoryStorage implements WidgetStorage {
             previousZIndex = widget.getZIndex();
             widgetsToShift.add(widget);
         }
+        Collections.reverse(widgetsToShift);
         return widgetsToShift;
     }
 

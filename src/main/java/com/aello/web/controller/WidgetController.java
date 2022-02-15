@@ -4,15 +4,19 @@ import com.aello.model.Widget;
 import com.aello.service.WidgetService;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-import java.util.List;
-
 import static com.aello.constants.ControllerDocumentationConstants.*;
+import static com.aello.constants.WidgetConstants.Z_INDEX_PROP;
 
 @Api(tags = API_TAGS, value = "1")
 @RestController
@@ -82,7 +86,10 @@ public class WidgetController {
             @ApiResponse(code = 404, message = EMPTY_WIDGET_STORAGE_EXCEPTION_MESSAGE)})
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<List<Widget>> getWidgetsList() {
-        return new ResponseEntity<>(widgetService.getAllWidgets(), HttpStatus.OK);
+    public ResponseEntity<Page<Widget>> getWidgetsPage(
+            @PageableDefault(page = DEFAULT_START_PAGE, size = DEFAULT_PAGE_SIZE)
+            @SortDefault(sort = Z_INDEX_PROP, direction = Sort.Direction.ASC)
+                    Pageable pageable) {
+        return new ResponseEntity<>(widgetService.getAllWidgets(pageable), HttpStatus.OK);
     }
 }

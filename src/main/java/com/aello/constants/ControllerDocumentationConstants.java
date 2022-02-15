@@ -4,6 +4,9 @@ public interface ControllerDocumentationConstants {
     String API_TAGS = "A web service to work with widgets via HTTP REST API. ";
     String WIDGET_MAPPING = "/widgets";
 
+    int DEFAULT_START_PAGE = 0;
+    int DEFAULT_PAGE_SIZE = 10;
+
     String CREATE_WIDGET_DESCRIPTION = "Creating a widget";
     String UPDATE_WIDGET_DESCRIPTION = "Changing widget data by UUID";
     String DELETE_WIDGET_DESCRIPTION = "Delete stored widget data by UUID";

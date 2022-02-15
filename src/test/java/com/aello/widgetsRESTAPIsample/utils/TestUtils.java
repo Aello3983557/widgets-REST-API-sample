@@ -1,12 +1,18 @@
 package com.aello.widgetsRESTAPIsample.utils;
 
 import com.aello.model.Widget;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
 import static com.aello.constants.CommonConstants.DATE_PATTERN;
+import static com.aello.constants.ControllerDocumentationConstants.DEFAULT_PAGE_SIZE;
+import static com.aello.constants.ControllerDocumentationConstants.DEFAULT_START_PAGE;
+import static com.aello.constants.WidgetConstants.Z_INDEX_PROP;
 import static com.aello.service.WidgetUtils.generateUUID;
 
 public class TestUtils {
@@ -47,6 +53,10 @@ public class TestUtils {
 
     public static String formatDate(LocalDateTime dateTime) {
         return dateTime.format(DateTimeFormatter.ofPattern(DATE_PATTERN));
+    }
+
+    public static Pageable getDefaultPageable() {
+        return PageRequest.of(DEFAULT_START_PAGE, DEFAULT_PAGE_SIZE, Sort.by(Sort.Direction.ASC, Z_INDEX_PROP));
     }
 
     private TestUtils() {

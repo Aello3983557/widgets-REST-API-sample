@@ -9,6 +9,7 @@ public interface WidgetConstants {
             "determines the order of widgets (regardless of their coordinates).\n" +
             "Gaps are allowed.\u200B The higher the value, the higher the widget\n" +
             "lies on the plane.";
+    String Z_INDEX_PROP = "zIndex";
 
     String UUID_EXAMPLE = "22a6dd81-103a-4d3a-8e9b-0ba4b527f5f6";
 

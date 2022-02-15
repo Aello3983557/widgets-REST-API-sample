@@ -19,8 +19,7 @@ import java.util.Optional;
 
 import static com.aello.constants.ControllerDocumentationConstants.*;
 import static com.aello.service.WidgetUtils.generateUUID;
-import static com.aello.widgetsRESTAPIsample.utils.TestUtils.createNewWidgetForTest;
-import static com.aello.widgetsRESTAPIsample.utils.TestUtils.createWidgetForTest;
+import static com.aello.widgetsRESTAPIsample.utils.TestUtils.*;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
@@ -103,12 +102,12 @@ class WidgetServiceTest {
         List<Widget> widgets = new ArrayList<>();
         widgets.add(createWidgetForTest());
         when(storage.getAllWidgets()).thenReturn(widgets);
-        assertThatNoException().isThrownBy(service::getAllWidgets);
+        assertThatNoException().isThrownBy(() -> service.getAllWidgets(getDefaultPageable()));
     }
 
     @Test
     public void testGetWidgetsNotFound() {
-        assertThatThrownBy(service::getAllWidgets)
+        assertThatThrownBy(() -> service.getAllWidgets(getDefaultPageable()))
                 .isInstanceOf(EmptyWidgetStorageException.class)
                 .hasMessage(EMPTY_WIDGET_STORAGE_EXCEPTION_MESSAGE);
     }

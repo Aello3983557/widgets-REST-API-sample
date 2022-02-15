@@ -7,10 +7,11 @@ import com.aello.model.exception.WidgetNotFoundException;
 import com.aello.service.storage.WidgetStorage;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.aello.constants.ControllerDocumentationConstants.*;
 
@@ -52,12 +53,16 @@ public class WidgetService {
         return optionalWidget.get();
     }
 
-    public List<Widget> getAllWidgets() {
+    public Page<Widget> getAllWidgets(Pageable pageable) {
         List<Widget> storedWidgets = widgetStorage.getAllWidgets();
         if (storedWidgets.isEmpty()) {
             throw new EmptyWidgetStorageException(EMPTY_WIDGET_STORAGE_EXCEPTION_MESSAGE);
         }
-        return storedWidgets;
+        return new PageImpl<>(storedWidgets.stream()
+                .skip((long) pageable.getPageNumber() * pageable.getPageSize())
+                .limit(storedWidgets.size())
+                .sorted(Comparator.comparingInt(Widget::getZIndex))
+                .collect(Collectors.toCollection(ArrayList::new)), pageable, storedWidgets.size());
     }
 
     private void validateWidgetId(String widgetUUID) {
