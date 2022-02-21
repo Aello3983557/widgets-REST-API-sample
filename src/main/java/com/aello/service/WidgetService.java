@@ -9,6 +9,8 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -16,6 +18,7 @@ import java.util.stream.Collectors;
 import static com.aello.constants.ControllerDocumentationConstants.*;
 
 @Service
+@Transactional(readOnly = true)
 public class WidgetService {
     private final WidgetStorage widgetStorage;
 
@@ -24,6 +27,7 @@ public class WidgetService {
         this.widgetStorage = widgetStorage;
     }
 
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public Widget createWidget(Widget widget) {
         if (widget.getUuid() != null) {
             throw new WidgetIdValidationException(WIDGET_ID_IS_NOT_EMPTY_EXCEPTION_MESSAGE);
